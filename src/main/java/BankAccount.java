@@ -30,10 +30,29 @@ public class BankAccount {
             }
             balance -= amount;
             System.out.println(Thread.currentThread().getName() + " withdrew: " + amount + ", Current Balance: " + balance);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Restore the interrupted status
+            System.out.println("Thread was interrupted during withdrawal.");
         } finally {
             lock.unlock();
         }
     }
+
+
+    //CLarification on what is thrownInterruptedException and how does the flow happen ?
+    //so basically what i understood is that the withdraw can be interrupted by a customer by hitting cancel, in that scenario since the lock is lockInteruptible, the withdraw thread will be interrupted and the code in catch block will execute in that case. And then Thread.currentThread().interrupt() will be executed
+    //ChatGPT said:
+    //ChatGPT
+    //
+    //Yes, you’ve got it! The idea is that if the withdraw method is interrupted (for example, if a customer cancels the transaction), the lock.lockInterruptibly() method allows the thread to be interrupted while waiting to acquire the lock. When this interruption occurs:
+    //
+    //    Interrupted Exception Thrown: An InterruptedException is thrown, which is caught in the catch block.
+    //
+    //    Handle Interruption: Inside the catch block, Thread.currentThread().interrupt() is called to restore the interrupted status of the thread. This is important because catching the InterruptedException clears the thread’s interrupted status, and by calling Thread.currentThread().interrupt(), you ensure that the interruption signal is not lost, which can be important for higher-level interrupt handling.
+    //
+    //    Graceful Exit: Any necessary clean-up(unlocking) or logging can also be done in the catch block.
+    //
+    //So, the method gracefully handles the interruption, ensuring that resources like locks are properly managed even if the operation is interrupted.
 
     public static void main(String[] args) throws InterruptedException {
         BankAccount account = new BankAccount();
@@ -68,3 +87,6 @@ public class BankAccount {
         executor.awaitTermination(1, TimeUnit.MINUTES);
     }
 }
+
+
+
