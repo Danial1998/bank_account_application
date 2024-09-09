@@ -18,9 +18,9 @@ public class ExecutorServiceExample implements Runnable{
         ExecutorServiceExample numberThread = new ExecutorServiceExample();
 
         ExecutorService executorService = Executors.newFixedThreadPool(3);
-        executorService.submit(numberThread);
-        executorService.submit(numberThread);
-        executorService.submit(numberThread);
-        executorService.submit(numberThread);
+        executorService.execute(numberThread);
+        executorService.execute(numberThread);
+        executorService.execute(numberThread);
+        executorService.execute(numberThread);
     }
 }
